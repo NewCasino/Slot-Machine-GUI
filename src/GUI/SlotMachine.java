@@ -27,39 +27,43 @@ public class SlotMachine extends JFrame implements ActionListener, MouseListener
 	 	int countTimes=0;//number of time game play
 	  
 
-	public static int getCountWinn() {
-		return countWinn;
-	}
+   int avgCredit1;
+   int avgCredit2;
+   int avgCredit;
+   SlotMachine objNum;
+	// maximum number of credits.
+	private static final int maxBet = 3;
+	// creating 3 reels.
+	Reel objReel = new Reel();
+	Isymbol[] reel1 = objReel.spin();
+	Reel objReel2 = new Reel();
+	Isymbol[] reel2 = objReel2.spin();
+	Reel objReel3 = new Reel();
+	Isymbol[] reel3 = objReel3.spin();
+	// creating 3 treads.
+	Thread thread1 = new Thread() {
+		public void run() {
+			reel1();
+		}
+	};
+	Thread thread2 = new Thread() {
+		public void run() {
+			reel2();
+		}
+	};
+	Thread thread3 = new Thread() {
+		public void run() {
+			reel3();
+		}
+	};
 
-	public static void setCountWinn(int countWinn) {
-		SlotMachine.countWinn = countWinn;
-	}
+	symbol obj = new symbol();
+	private JLabel lblCredit, lblBet, creditArea, betArea, lblImgEmpty, lblImg1, lblImg2, lblImg3, lblImgEmpty2, LBLEMP,headName;
+	private JButton btnSpin, btnBetOne, btnBetMax, btnReset, btnAddCoin, btnStat;
 
-	public static int getCountLoss() {
-		return countLoss;
-	}
+	Container contentPane;
 
-	public static void setCountLoss(int countLoss) {
-		SlotMachine.countLoss = countLoss;
-	}
-
-	public static double getTimeCount() {
-		return timeCount;
-	}
-
-	public static void setTimeCount(double timeCount) {
-		SlotMachine.timeCount = timeCount;
-	}
-
-	public static int getAvgcredit() {
-		return Avgcredit;
-	}
-
-	public static void setAvgcredit(int avgcredit) {
-		Avgcredit = avgcredit;
-	}
-
-public SlotMachine() {
+	public SlotMachine() {
 		
 		
 		setLayout(new GridLayout(5,5,5,5));
@@ -206,5 +210,278 @@ public SlotMachine() {
 		btnAddCoin.addActionListener(this);
 		btnStat.addActionListener(this);
 		addMouseListener(this);
+	}
+
+	@SuppressWarnings("static-access")
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		try {
+
+			// Enabling all bttons.
+			btnSpin.setEnabled(true);
+			btnBetOne.setEnabled(true);
+			btnBetMax.setEnabled(true);
+			btnReset.setEnabled(true);
+			btnAddCoin.setEnabled(true);
+			btnStat.setEnabled(true);
+
+			thread1.stop();
+			thread2.stop();
+			thread3.stop();
+
+			compair();
+
+			// re Start the threads
+			thread1 = new Thread() {
+				public void run() {
+					reel1();
+				}
+			};
+			thread2 = new Thread() {
+				public void run() {
+					reel2();
+				}
+			};
+			thread3 = new Thread() {
+				public void run() {
+					reel3();
+				}
+			};
+		} catch (Exception ex) {
+		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if ("AddCoin".equals(e.getActionCommand())) {
+			addCoin();
+		} else if ("BetMax".equals(e.getActionCommand())) {
+			betMax();
+		} else if ("BetOne".equals(e.getActionCommand())) {
+			betOne();
+		} else if ("Reset".equals(e.getActionCommand())) {
+			reset();
+		} else if ("Spin".equals(e.getActionCommand())) {
+			spin();
+		} else if ("Stat".equals(e.getActionCommand())) {
+			stat();
+		}
+	}
+
+	public void addCoin() {
+		int InitialValue = Integer.parseInt(creditArea.getText());
+		creditArea.setText(String.valueOf(++InitialValue));
+	}
+
+	public void betMax() {
+		int betValue = Integer.parseInt(betArea.getText());
+		if (betValue < maxBet) {
+			// calculating the bet difference.
+			int difference = maxBet - betValue;
+			// removing credits after betting.
+			int InitialValue = Integer.parseInt(creditArea.getText());
+			int newValue = InitialValue - difference;
+			if (newValue > 0) {
+				creditArea.setText(String.valueOf(newValue));
+				// setting max bet.
+				betArea.setText("3");
+			}
+
+		}
+        if(creditArea.getText().equals("0")){
+			
+			JOptionPane.showMessageDialog(null, "Plaese Add coin first", "Alert", JOptionPane.INFORMATION_MESSAGE);
+
+		}
+	}
+
+	public void betOne() {
+		int betValue = Integer.parseInt(betArea.getText());
+		// removing credits after betting.
+		int InitialValue = Integer.parseInt(creditArea.getText());
+		int newValue = InitialValue - 1;
+		if (newValue >= 0) {
+			creditArea.setText(String.valueOf(newValue));
+			// setting max bet.
+			betArea.setText(String.valueOf(++betValue));
+		}
+		if(creditArea.getText().equals("0")){
+			
+			JOptionPane.showMessageDialog(null, "Plaese Add coin first", "Alert", JOptionPane.INFORMATION_MESSAGE);
+
+		}
+	}
+
+	public void reset() {
+		int betValue = Integer.parseInt(betArea.getText());
+		int InitialValue = Integer.parseInt(creditArea.getText());
+		creditArea.setText(String.valueOf(InitialValue + betValue));
+		// setting max bet.
+		betArea.setText(String.valueOf(0));
+		creditArea.setText(String.valueOf(10));
+		
+	}
+
+	public void spin() {
+		if (betArea.getText().equals("0")) {
+			JOptionPane.showMessageDialog(null, "Plaese bet first", "Alert", JOptionPane.INFORMATION_MESSAGE);
+		} else {
+			thread1.start();
+			thread2.start();
+			thread3.start();
+        	countTimes++;
+			betAmmount += Integer.parseInt(betArea.getText());
+			// Disabaling all buttons.
+			btnSpin.setEnabled(false);
+			btnBetOne.setEnabled(false);
+			btnBetMax.setEnabled(false);
+			btnReset.setEnabled(false);
+			btnAddCoin.setEnabled(false);
+			btnStat.setEnabled(false);
+		}
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void reel1() {
+		int num = 0;
+		
+		for (int i = 0; i < 1000; i--) {
+			lblImg1.setIcon(reel1[++num].getImage());
+			reel1Num = reel1[num].getValue();
+			try {
+				thread1.sleep(50);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			if (num == 5) {
+				num = 0;
+			}
+		}
+	}
+
+	public void reel2() {
+		int num = 0;
+		for (int i = 0; i < 1000; i--) {
+			lblImg2.setIcon(reel2[++num].getImage());
+			reel2Num = reel2[num].getValue();
+
+			try {
+				thread2.sleep(50);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			if (num == 5) {
+				num = 0;
+			}
+		}
+	}
+
+	public void reel3() {
+		int num = 0;
+		for (int i = 0; i < 1000; i--) {
+			lblImg3.setIcon(reel3[++num].getImage());
+			reel3Num = reel3[num].getValue();
+			try {
+				thread3.sleep(50);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			if (num == 5) {
+				num = 0;
+			}
+		}
+	}
+
+
+	public void compair() {
+
+		int value = 0;
+		boolean flag = false;
+		if (reel1Num == reel2Num) {
+			
+			flag = true;
+			value = reel1Num;
+
+		} else if (reel2Num == reel3Num) {
+			flag = true;
+			value = reel2Num;
+
+		} else if (reel1Num == reel3Num) {
+			flag = true;
+			value = reel3Num;
+
+		}
+
+		if (flag) {
+			int betValue = Integer.parseInt(betArea.getText());
+			int wonAmmount = betValue * value;
+			avgCredit1=avgCredit1+betValue;
+			
+			JOptionPane.showMessageDialog(null, "You have won : " + wonAmmount+" credits", "Congratulations",
+					JOptionPane.INFORMATION_MESSAGE);
+			int InitialValue = Integer.parseInt(creditArea.getText());
+			creditArea.setText(String.valueOf(InitialValue + wonAmmount));
+			betArea.setText(String.valueOf(0));
+			countNumWinn++;
+			objNum.setCountWinn(countNumWinn);
+
+			
+		} else {
+			JOptionPane.showMessageDialog(null, "You have lost  ", "BAD LUCK", JOptionPane.INFORMATION_MESSAGE);
+			int betValue = Integer.parseInt(betArea.getText());
+
+			betArea.setText(String.valueOf(0));
+			System.out.println(betValue);
+		
+			avgCredit2=avgCredit2-betValue;
+			 System.out.println(avgCredit2);
+
+        	countNumloss++;
+        	objNum.setCountLoss(countNumloss);
+        	
+
+		}
+		 avgCredit=avgCredit2+avgCredit1;
+		 objNum.setAvgcredit(avgCredit);
+		 objNum.setTimeCount(countTimes);
+		 System.out.println(avgCredit);
+
+	}
+
+	public void stat() {
+		Statistic stat=new Statistic(objNum);
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+
+	}
+	public static void main(String[]args){
+		SlotMachine object=new SlotMachine();
+		object.setTitle("Slot Machine");
+		object.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		object.setSize(600,500);
+		object.setLocationRelativeTo(null);
+		object.setVisible(true);
 	}
 }

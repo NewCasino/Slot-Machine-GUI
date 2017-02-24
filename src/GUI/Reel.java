@@ -40,6 +40,15 @@ public class Reel {
 		
 	}
 
-	
+	public Isymbol[] spin() {
+		Isymbol[] arrayIsymbol = new Isymbol[6];
+		for(int x =0;x<6;x++){
+			int max = symbolArryList.size();
+			Random rn = new Random();
+			int answer = rn.nextInt(max);
+			arrayIsymbol[x]= symbolArryList.remove(answer);
+		}
+		return arrayIsymbol;
+	}
 
 }

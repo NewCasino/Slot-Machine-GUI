@@ -27,6 +27,38 @@ public class SlotMachine extends JFrame implements ActionListener, MouseListener
 	 	int countTimes=0;//number of time game play
 	  
 
+	public static int getCountWinn() {
+		return countWinn;
+	}
+
+	public static void setCountWinn(int countWinn) {
+		SlotMachine.countWinn = countWinn;
+	}
+
+	public static int getCountLoss() {
+		return countLoss;
+	}
+
+	public static void setCountLoss(int countLoss) {
+		SlotMachine.countLoss = countLoss;
+	}
+
+	public static double getTimeCount() {
+		return timeCount;
+	}
+
+	public static void setTimeCount(double timeCount) {
+		SlotMachine.timeCount = timeCount;
+	}
+
+	public static int getAvgcredit() {
+		return Avgcredit;
+	}
+
+	public static void setAvgcredit(int avgcredit) {
+		Avgcredit = avgcredit;
+	}
+
    int avgCredit1;
    int avgCredit2;
    int avgCredit;

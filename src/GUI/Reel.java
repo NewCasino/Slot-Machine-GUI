@@ -7,10 +7,10 @@ public class Reel {
 
 	symbol obj1 = new symbol();
 	symbol obj2 = new symbol();
-	//symbol obj3 = new symbol();
+	symbol obj3 = new symbol();
 	symbol obj4 = new symbol();
 	symbol obj5 = new symbol();
-	//symbol obj6 = new symbol();
+	symbol obj6 = new symbol();
 	ArrayList<symbol> symbolArryList = new ArrayList<symbol>();
 
 	Reel() {

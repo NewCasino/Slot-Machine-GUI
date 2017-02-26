@@ -27,5 +27,20 @@ public class symbol implements Isymbol {
 
 	}
 
+	@Override
+	public ImageIcon getImage() {
+		return img;
+	}
+
+	@Override
+	public void setValue(int value1) {
+		value = value1;
+
+	}
+
+	@Override
+	public int getValue() {
+		return value;
+	}
 
 }

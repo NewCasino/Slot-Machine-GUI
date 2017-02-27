@@ -103,6 +103,36 @@ public class Statistic extends JFrame{
   
   }
 
-	
+	class save implements ActionListener{
+    	 
+    	 public void Writter(){
+    		
+        	 try {
+        		 
+        		Date date = new Date() ;
+        	    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss") ;
+        		File fw = new File(dateFormat.format(date) + ".txt") ;
+				PrintWriter pw=new PrintWriter(fw);
+				pw.println(graphics1.getText());
+				pw.println(graphics2.getText());
+				pw.close();
+			} catch (IOException e) {
+			}
+     		
+		}
+
+	public void actionPerformed(ActionEvent e) {
+                 
+			Writter();
+		}
+     	 
+	}
+    
+     public void statisReset(){
+      graphics1.setText(" NUMBER OF TIMES WON THE GAME       : 0");
+	  graphics2.setText(" NUMBER OF TIMES lOSS THE GAME      : 0");
+	  graphics3.setText(" THE CREDITS THAT NETTED PER GAME   : 0");
+	  
+     }
 }
 
